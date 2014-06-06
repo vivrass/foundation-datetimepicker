@@ -135,6 +135,13 @@
 			this.keyboardNavigation = this.element.data('date-keyboard-navigation');
 		}
 
+		this.showAMPM = false;
+		if ('showAMPM' in options) {
+			this.showAMPM = options.showAMPM;
+		} else if ('showAmpm' in this.element.data()) {
+			this.showAMPM = this.element.data('show-ampm');
+		}
+
 		this.todayBtn = (options.todayBtn || this.element.data('date-today-btn') || false);
 		this.todayHighlight = (options.todayHighlight || this.element.data('date-today-highlight') || false);
 
@@ -444,6 +451,7 @@
 			nextMonth = nextMonth.valueOf();
 			var html = [];
 			var clsName;
+			var hourName;
 			while(prevMonth.valueOf() < nextMonth) {
 				if (prevMonth.getUTCDay() == this.weekStart) {
 					html.push('<tr>');
@@ -486,7 +494,21 @@
 				} else if (hours == i) {
 					clsName += ' active';
 				}
-				html.push('<span class="hour'+clsName+'">'+i+':00</span>');
+				if (this.showAMPM) {
+					if (i === 0) {
+						hourName = '12 AM';
+					} else if (i === 12) {
+						hourName = '12 PM';
+					} else if (i > 11) {
+						hourName = (i - 12).toString();
+						hourName += ' PM';
+					} else {
+						hourName = i.toString() + ' AM';
+					}
+					html.push('<span class="hour'+clsName+'">'+hourName+'</span>');
+				} else {
+					html.push('<span class="hour'+clsName+'">'+i+':00</span>');
+				}
 			}
 			this.picker.find('.datetimepicker-hours td').html(html.join(''));
 
