@@ -41,7 +41,18 @@
 		this.language = options.language || this.element.data('date-language') || "en";
 		this.language = this.language in dates ? this.language : "en";
 		this.isRTL = dates[this.language].rtl || false;
-		this.format = DPGlobal.parseFormat(options.format || this.element.data('date-format') || 'yyyy-mm-dd hh:ii');
+
+		if(options.pickTime!=undefined) {
+			this.pickTime = options.pickTime;
+		} else if(this.element.data('date-pick-time')!=undefined) {
+			this.pickTime = this.element.data('date-pick-time');
+		} else {
+			this.pickTime=1;
+		}
+
+
+		var defaultFormat = this.pickTime ? 'yyyy-mm-dd hh:ii' : 'yyyy-mm-dd'
+		this.format = DPGlobal.parseFormat(options.format || this.element.data('date-format') || defaultFormat);
 		this.isInline = false;
 		this.isInput = this.element.is('input');
 		this.component = this.element.is('.date') ? this.element.find('.prefix').parent() : false;
@@ -633,7 +644,6 @@
 		click: function(e) {
 			e.stopPropagation();
 			e.preventDefault();
-			
 			if ($(e.target).hasClass('datetimepicker-close') || $(e.target).parent().hasClass('datetimepicker-close')){
 				this.hide();
 			}
@@ -763,7 +773,7 @@
 						var oldViewMode = this.viewMode;
 						this.showMode(-1);
 						this.fill();
-						if (oldViewMode == this.viewMode && this.autoclose) {
+						if ( (!this.pickTime || oldViewMode == this.viewMode) && this.autoclose) {
 							this.hide();
 						}
 						break;
@@ -1255,3 +1265,5 @@
 	$.fn.fdatetimepicker.DPGlobal = DPGlobal;
 
 }( window.jQuery );
+
+
