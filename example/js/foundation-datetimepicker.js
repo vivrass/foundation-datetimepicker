@@ -527,7 +527,10 @@
 			for(var i=0;i<60;i+=this.minuteStep) {
 				var actual = UTCDate(year, month, dayMonth, hours, i);
 				clsName = '';
-				if (actual.valueOf() < this.startDate || actual.valueOf() > this.endDate) {
+				// If we're using the previous hour for startDate above, we need to take that into
+				// account when figuring out which minutes to disable too. If we don't, we may end up
+				// with a non-disabled day containing all disabled minutes.        
+				if ((actual.valueOf() + 3600000) < this.startDate || actual.valueOf() > this.endDate) {
 					clsName += ' disabled';
 				} else if (Math.floor(minutes/this.minuteStep) == Math.floor(i/this.minuteStep)) {
 					clsName += ' active';
